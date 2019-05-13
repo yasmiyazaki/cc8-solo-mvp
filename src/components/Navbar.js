@@ -7,9 +7,7 @@ const NavBar = () => {
     <div>
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="title" color="inherit">
-            Magikarp Machine Learning
-          </Typography>
+          <h1>Magikarp Machine Learning</h1>
         </Toolbar>
       </AppBar>
     </div>

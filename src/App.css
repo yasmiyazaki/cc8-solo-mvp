@@ -1,5 +1,14 @@
+body {
+  font-family: "Luckiest Guy", cursive;
+}
+
 .videoID {
-  /* height: 50vh;
-  width: 50vh; */
+  max-width: 100%;
+  height: auto;
   border: 5px solid grey;
+}
+
+.magikarp-gif {
+  max-width: 50%;
+  height: auto;
 }

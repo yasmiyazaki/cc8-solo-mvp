@@ -51,7 +51,7 @@ class App extends Component {
           href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"
         />
         <header className="App-header">
-          <h1>Magikarp Machine Learning App</h1>
+          <h2>I will forget everything every 1 min</h2>
         </header>
         <Grid container spacing={24}>
           <Grid item lg={6} sm={3}>
