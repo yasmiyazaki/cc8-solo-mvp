@@ -3,7 +3,10 @@ import "./App.css";
 import ml5 from "ml5";
 import Webcam from "react-webcam";
 
+import NavBar from "./components/Navbar";
 import Magikarp from "./components/Magikarp";
+
+import Grid from "@material-ui/core/Grid";
 
 class App extends Component {
   state = {
@@ -30,8 +33,8 @@ class App extends Component {
         console.log(err);
       } else {
         // the results is an arry and have three possible classification
-        this.setState({ label: results[0].label });
-        classfyVideoConstant();
+        this.setState({ predictions: results });
+        setTimeout(classfyVideoConstant, 2000);
       }
     };
   };
@@ -42,12 +45,22 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+        <NavBar />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"
+        />
         <header className="App-header">
           <h1>Magikarp Machine Learning App</h1>
         </header>
-        <Webcam className="videoID" />
-        <div>{this.state.label}</div>
-        <Magikarp />
+        <Grid container spacing={24}>
+          <Grid item lg={6} sm={3}>
+            <Magikarp predictions={this.state.predictions} />
+          </Grid>
+          <Grid item lg={6} sm={3}>
+            <Webcam className="videoID" />
+          </Grid>
+        </Grid>
       </div>
     );
   }
