@@ -10,33 +10,63 @@ import Grid from "@material-ui/core/Grid";
 
 class App extends Component {
   state = {
-    predictions: [],
+    video: "",
+    predictions: "",
     classifier: "",
-    label: ""
+    label: "",
+    textToRemember: ""
   };
 
   classifyVideo = () => {
     // [0] is necessary because of className being array
     const video = document.getElementsByClassName("videoID")[0];
+    this.setState({ video });
 
     const modelReady = () => {
-      classfyVideoConstant();
-    };
-    const classifier = ml5.imageClassifier("MobileNet", video, modelReady);
-
-    const classfyVideoConstant = () => {
-      classifier.predict(video, gotResults);
+      this.classfyVideoConstant();
     };
 
-    const gotResults = (err, results) => {
-      if (err) {
-        console.log(err);
-      } else {
-        // the results is an arry and have three possible classification
-        this.setState({ predictions: results });
-        setTimeout(classfyVideoConstant, 2000);
-      }
-    };
+    const mobilenet = ml5.featureExtractor("Mobilenet");
+    const classifier = mobilenet.classification(video, modelReady);
+    this.setState({ classifier });
+  };
+
+  classfyVideoConstant = () => {
+    this.state.classifier.classify(this.gotResults);
+  };
+
+  whileTraining = loss => {
+    if (loss === null) {
+      console.log("Training Complete");
+      this.state.classifier.classify(this.gotResults);
+    } else {
+      console.log(loss);
+    }
+  };
+
+  gotResults = (err, results) => {
+    if (err) {
+      console.log(err);
+    } else {
+      // the results is an arry and have three possible classification
+      console.log(results);
+      this.setState({ predictions: results });
+      setTimeout(this.classfyVideoConstant, 2000);
+    }
+  };
+
+  textToRemember = event => {
+    this.setState({ textToRemember: event.target.value });
+  };
+
+  rememberTextAndImage = e => {
+    e.preventDefault();
+    this.state.classifier.addImage(this.state.textToRemember);
+  };
+
+  trainImage = e => {
+    e.preventDefault();
+    this.state.classifier.train(this.whileTraining);
   };
 
   componentDidMount() {
@@ -55,7 +85,12 @@ class App extends Component {
         </header>
         <Grid container spacing={24}>
           <Grid item lg={6} sm={3}>
-            <Magikarp predictions={this.state.predictions} />
+            <Magikarp
+              predictions={this.state.predictions}
+              remember={this.textToRemember}
+              rememberTextAndImage={this.rememberTextAndImage}
+              train={this.trainImage}
+            />
           </Grid>
           <Grid item lg={6} sm={3}>
             <Webcam className="videoID" />
