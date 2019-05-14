@@ -1,13 +1,31 @@
 import React, { Component } from "react";
 import "../App.css";
 import ml5 from "ml5";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
+
+const styles = theme => ({
+  fab: {
+    margin: theme.spacing.unit
+  },
+  extendedIcon: {
+    marginRight: theme.spacing.unit
+  }
+});
 
 export default class Magikarp extends Component {
   state = {
     video: "",
     predictions: [],
     classifier: "",
-    textToRemember: ""
+    textToRemember: "",
+    count: 15
   };
 
   classifyVideo = () => {
@@ -55,16 +73,19 @@ export default class Magikarp extends Component {
   rememberTextAndImage = e => {
     e.preventDefault();
     this.state.classifier.addImage(this.state.textToRemember);
+    this.setState({ count: --this.state.count });
   };
 
   trainImage = e => {
     e.preventDefault();
     this.state.classifier.train(this.whileTraining);
+    this.setState({ count: 15 });
   };
 
   componentDidMount() {
     this.classifyVideo();
   }
+
   render() {
     return (
       <div>
@@ -72,27 +93,59 @@ export default class Magikarp extends Component {
           <h2>Magikarp: I don't know anything.</h2>
         </header>
 
-        <h3>What Should I Remember ?</h3>
         <form>
-          <input
-            name="textToRemember"
-            type="text"
-            id="rememberText"
+          <TextField
+            id="standard-name"
+            label="What to remember?"
             onChange={this.textToRemember}
+            margin="normal"
           />
-          <button id="rememberThis" onClick={this.rememberTextAndImage}>
-            Click 10 times to remember
-          </button>
-          <button id="train" onClick={this.trainImage}>
-            Train Magikarp!
-          </button>
+
+          {this.state.count > 0 ? (
+            <Button
+              variant="contained"
+              id="rememberThis"
+              onClick={this.rememberTextAndImage}
+              color="primary"
+            >
+              Train {this.state.count} times!
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              id="train"
+              onClick={this.trainImage}
+              color="secondary"
+            >
+              Train!
+            </Button>
+          )}
         </form>
 
         <h3>Predictions</h3>
-        {this.state.predictions.length > 0 &&
-          this.state.predictions.map(prediction => (
-            <div key={prediction.label}>{prediction.label}</div>
-          ))}
+
+        <Paper>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Is it ...?</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {this.state.predictions.length > 0 ? (
+                this.state.predictions.map(prediction => (
+                  <TableRow>
+                    <TableCell key={prediction.label}>
+                      {prediction.label}
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow />
+              )}
+            </TableBody>
+          </Table>
+        </Paper>
 
         {this.state.predictions.length < 1 ? (
           <div>
