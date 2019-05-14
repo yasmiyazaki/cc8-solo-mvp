@@ -1,77 +1,39 @@
 import React, { Component } from "react";
 import "./App.css";
-import ml5 from "ml5";
+
 import Webcam from "react-webcam";
 
 import NavBar from "./components/Navbar";
 import Magikarp from "./components/Magikarp";
+import Gyarados from "./components/Gyarados";
+import Catch from "./components/Catch";
 
 import Grid from "@material-ui/core/Grid";
 
 class App extends Component {
   state = {
-    video: "",
-    predictions: "",
-    classifier: "",
-    label: "",
-    textToRemember: ""
-  };
-
-  classifyVideo = () => {
-    // [0] is necessary because of className being array
-    const video = document.getElementsByClassName("videoID")[0];
-    this.setState({ video });
-
-    const modelReady = () => {
-      this.classfyVideoConstant();
-    };
-
-    const mobilenet = ml5.featureExtractor("Mobilenet");
-    const classifier = mobilenet.classification(video, modelReady);
-    this.setState({ classifier });
-  };
-
-  classfyVideoConstant = () => {
-    this.state.classifier.classify(this.gotResults);
-  };
-
-  whileTraining = loss => {
-    if (loss === null) {
-      console.log("Training Complete");
-      this.state.classifier.classify(this.gotResults);
-    } else {
-      console.log(loss);
+    magikarp: "NONE",
+    level: {
+      NONE: "No Pokemon",
+      ONE: "Magikarp",
+      TWO: "Gyarados"
     }
   };
 
-  gotResults = (err, results) => {
-    if (err) {
-      console.log(err);
-    } else {
-      // the results is an arry and have three possible classification
-      console.log(results);
-      this.setState({ predictions: results });
-      setTimeout(this.classfyVideoConstant, 2000);
+  levelup = () => {
+    switch (this.state.magikarp) {
+      case "NONE":
+        this.setState({ magikarp: "ONE" });
+        break;
+      case "ONE":
+        this.setState({ magikarp: "TWO" });
+        break;
+      default:
+        this.setState({ magikarp: "NONE" });
+        break;
     }
   };
 
-  textToRemember = event => {
-    this.setState({ textToRemember: event.target.value });
-  };
-
-  rememberTextAndImage = e => {
-    e.preventDefault();
-    this.state.classifier.addImage(this.state.textToRemember);
-  };
-
-  trainImage = e => {
-    e.preventDefault();
-    this.state.classifier.train(this.whileTraining);
-  };
-
-  componentDidMount() {
-    this.classifyVideo();
-  }
   render() {
     return (
       <div className="App">
@@ -81,16 +43,17 @@ class App extends Component {
           href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"
         />
         <header className="App-header">
-          <h2>I will forget everything every 1 min</h2>
+          <h2>Your Status: {this.state.level[this.state.magikarp]}</h2>
         </header>
         <Grid container spacing={24}>
           <Grid item lg={6} sm={3}>
-            <Magikarp
-              predictions={this.state.predictions}
-              remember={this.textToRemember}
-              rememberTextAndImage={this.rememberTextAndImage}
-              train={this.trainImage}
-            />
+            {this.state.magikarp === "NONE" && <Catch levelup={this.levelup} />}
+            {this.state.magikarp === "ONE" && (
+              <Magikarp levelup={this.levelup} />
+            )}
+            {this.state.magikarp === "TWO" && (
+              <Gyarados levelup={this.levelup} />
+            )}
           </Grid>
           <Grid item lg={6} sm={3}>
             <Webcam className="videoID" />
