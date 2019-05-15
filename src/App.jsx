@@ -3,12 +3,15 @@ import "./App.css";
 
 import Webcam from "react-webcam";
 
-import NavBar from "./components/Navbar";
 import Magikarp from "./components/Magikarp";
 import Gyarados from "./components/Gyarados";
 import Catch from "./components/Catch";
 
-import Grid from "@material-ui/core/Grid";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
 
 class App extends Component {
   state = {
@@ -17,7 +20,12 @@ class App extends Component {
       NONE: "No Pokemon",
       ONE: "Magikarp",
       TWO: "Gyarados"
-    }
+    },
+    predictions: []
+  };
+
+  setPrediction = results => {
+    this.setState({ predictions: results });
   };
 
   levelup = () => {
@@ -36,29 +44,53 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
-        <NavBar />
+      <div className="wrapper">
         <link
+          href="https://fonts.googleapis.com/css?family=Carter+One"
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"
         />
-        <header className="App-header">
-          <h2>Your Status: {this.state.level[this.state.magikarp]}</h2>
-        </header>
-        <Grid container spacing={24}>
-          <Grid item lg={6} sm={3}>
-            {this.state.magikarp === "NONE" && <Catch levelup={this.levelup} />}
-            {this.state.magikarp === "ONE" && (
-              <Magikarp levelup={this.levelup} />
-            )}
-            {this.state.magikarp === "TWO" && (
-              <Gyarados levelup={this.levelup} />
-            )}
-          </Grid>
-          <Grid item lg={6} sm={3}>
-            <Webcam className="videoID" />
-          </Grid>
-        </Grid>
+        <div className="column One">
+          <header className="App-header">
+            <h1>Welcome To Magikarp Machine Learning</h1>
+            <h2>Your have {this.state.level[this.state.magikarp]}</h2>
+          </header>
+
+          {this.state.magikarp === "NONE" && <Catch levelup={this.levelup} />}
+          {this.state.magikarp === "ONE" && (
+            <Magikarp
+              levelup={this.levelup}
+              setPrediction={this.setPrediction}
+              trained={this.state.predictions.length}
+            />
+          )}
+          {this.state.magikarp === "TWO" && (
+            <Gyarados
+              levelup={this.levelup}
+              setPrediction={this.setPrediction}
+            />
+          )}
+        </div>
+        <div className="column Two">
+          <h3>Predictions</h3>
+          <Paper id="prediction-table">
+            <Table>
+              <TableBody>
+                {this.state.predictions.length > 0 ? (
+                  this.state.predictions.map(prediction => (
+                    <TableRow>
+                      <TableCell key={prediction.label}>
+                        {prediction.label}
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow />
+                )}
+              </TableBody>
+            </Table>
+          </Paper>
+          <Webcam className="videoID" />
+        </div>
       </div>
     );
   }

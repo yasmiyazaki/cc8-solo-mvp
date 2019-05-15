@@ -3,26 +3,10 @@ import "../App.css";
 import ml5 from "ml5";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-
-const styles = theme => ({
-  fab: {
-    margin: theme.spacing.unit
-  },
-  extendedIcon: {
-    marginRight: theme.spacing.unit
-  }
-});
 
 export default class Magikarp extends Component {
   state = {
     video: "",
-    predictions: [],
     classifier: "",
     textToRemember: "",
     count: 15
@@ -61,12 +45,13 @@ export default class Magikarp extends Component {
     } else {
       // the results is an arry and have three possible classification
       console.log(results);
-      this.setState({ predictions: results });
+      this.props.setPrediction(results);
       setTimeout(this.classfyVideoConstant, 2000);
     }
   };
 
   textToRemember = event => {
+    console.log(this.props.trained);
     this.setState({ textToRemember: event.target.value });
   };
 
@@ -100,59 +85,36 @@ export default class Magikarp extends Component {
             onChange={this.textToRemember}
             margin="normal"
           />
-
-          {this.state.count > 0 ? (
-            <Button
-              variant="contained"
-              id="rememberThis"
-              onClick={this.rememberTextAndImage}
-              color="primary"
-            >
-              Train {this.state.count} times!
-            </Button>
-          ) : (
-            <Button
-              variant="contained"
-              id="train"
-              onClick={this.trainImage}
-              color="secondary"
-            >
-              Train!
-            </Button>
-          )}
+          <div>
+            {this.state.count > 0 ? (
+              <Button
+                variant="contained"
+                id="rememberThis"
+                onClick={this.rememberTextAndImage}
+                color="primary"
+                className="training-button"
+              >
+                Train {this.state.count} times!
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                id="train"
+                onClick={this.trainImage}
+                className="training-button"
+                color="secondary"
+              >
+                Train!
+              </Button>
+            )}
+          </div>
         </form>
 
-        <h3>Predictions</h3>
-
-        <Paper>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Is it ...?</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {this.state.predictions.length > 0 ? (
-                this.state.predictions.map(prediction => (
-                  <TableRow>
-                    <TableCell key={prediction.label}>
-                      {prediction.label}
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow />
-              )}
-            </TableBody>
-          </Table>
-        </Paper>
-
-        {this.state.predictions.length < 1 ? (
+        {this.props.trained < 1 ? (
           <div>
             <img
               src="https://media.giphy.com/media/RqbS66AuyXOMg/giphy.gif"
-              width="480"
-              height="360"
+              className="gif"
               alt="magikarp"
             />
           </div>
@@ -160,8 +122,7 @@ export default class Magikarp extends Component {
           <div>
             <img
               src="https://media.giphy.com/media/qSLPnBoL01f4Q/giphy.gif"
-              width="480"
-              height="360"
+              className="gif"
               onClick={this.props.levelup}
               alt="magikarpevolve"
             />

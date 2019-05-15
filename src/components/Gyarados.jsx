@@ -5,7 +5,6 @@ import ml5 from "ml5";
 export default class Gyarados extends Component {
   state = {
     video: "",
-    predictions: [],
     classifier: "",
     label: "",
     textToRemember: ""
@@ -18,6 +17,7 @@ export default class Gyarados extends Component {
     const modelReady = () => {
       classfyVideoConstant();
     };
+
     const classifier = ml5.imageClassifier("MobileNet", video, modelReady);
 
     const classfyVideoConstant = () => {
@@ -29,7 +29,7 @@ export default class Gyarados extends Component {
         console.log(err);
       } else {
         // the results is an arry and have three possible classification
-        this.setState({ predictions: results });
+        this.props.setPrediction(results);
         setTimeout(classfyVideoConstant, 2000);
       }
     };
@@ -45,15 +45,10 @@ export default class Gyarados extends Component {
         <header className="App-header">
           <h2>I can classify 1000 things!</h2>
         </header>
-        <h3>Predictions</h3>
-        {this.state.predictions.map(prediction => (
-          <div>{prediction.label}</div>
-        ))}
 
         <img
           src="https://media.giphy.com/media/eydmTJPFi6KGc/giphy.gif"
-          width="480"
-          height="360"
+          className="gif"
           onClick={this.props.levelup}
           alt="gyarados"
         />
