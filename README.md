@@ -6,8 +6,8 @@ It was a solo project createing MVP app in two days.
 ## Overview
 
 Magikarp Machine Learning is a machine learning game application with two functionalities.
-With the first function as Magikarp, you can train Magikarp to remember things in front of your webcamera with any text you want.
-The second function as Gyarados, it will classify predefined things using MobileNets.
+With the first function, you can train Magikarp to remember things in front of your webcamera with any text you want.
+The second function, as Gyarados, it will classify predefined things using MobileNets.
 
 ## Installing Dependencies and Starting Up
 
