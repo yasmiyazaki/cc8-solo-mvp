@@ -9,7 +9,9 @@ export default class Magikarp extends Component {
     video: "",
     classifier: "",
     textToRemember: "",
-    count: 15
+    count: 15,
+    commentOne: "I don't know anything.",
+    commentTwo: "I remembered something!"
   };
 
   classifyVideo = () => {
@@ -51,7 +53,6 @@ export default class Magikarp extends Component {
   };
 
   textToRemember = event => {
-    console.log(this.props.trained);
     this.setState({ textToRemember: event.target.value });
   };
 
@@ -75,7 +76,12 @@ export default class Magikarp extends Component {
     return (
       <div>
         <header className="App-header">
-          <h2>Magikarp: I don't know anything.</h2>
+          <h2>
+            Magikarp:{" "}
+            {this.props.trained < 1
+              ? this.state.commentOne
+              : this.state.commentTwo}
+          </h2>
         </header>
 
         <form>
