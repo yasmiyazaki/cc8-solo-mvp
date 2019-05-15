@@ -3,25 +3,19 @@ import "../App.css";
 import ml5 from "ml5";
 
 export default class Gyarados extends Component {
-  state = {
-    video: "",
-    classifier: "",
-    label: "",
-    textToRemember: ""
-  };
-
   classifyVideo = () => {
-    // [0] is necessary because of className being array
-    const video = document.getElementsByClassName("videoID")[0];
-
     const modelReady = () => {
       classfyVideoConstant();
     };
 
-    const classifier = ml5.imageClassifier("MobileNet", video, modelReady);
+    const classifier = ml5.imageClassifier(
+      "MobileNet",
+      this.props.video,
+      modelReady
+    );
 
     const classfyVideoConstant = () => {
-      classifier.predict(video, gotResults);
+      classifier.predict(this.props.video, gotResults);
     };
 
     const gotResults = (err, results) => {

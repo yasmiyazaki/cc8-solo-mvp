@@ -15,6 +15,7 @@ import Paper from "@material-ui/core/Paper";
 
 class App extends Component {
   state = {
+    video: "",
     magikarp: "NONE",
     level: {
       NONE: "No Pokemon",
@@ -41,6 +42,11 @@ class App extends Component {
         break;
     }
   };
+  componentDidMount() {
+    // [0] is necessary because of className being array
+    const video = document.getElementsByClassName("videoID")[0];
+    this.setState({ video });
+  }
 
   render() {
     return (
@@ -61,12 +67,14 @@ class App extends Component {
               levelup={this.levelup}
               setPrediction={this.setPrediction}
               trained={this.state.predictions.length}
+              video={this.state.video}
             />
           )}
           {this.state.magikarp === "TWO" && (
             <Gyarados
               levelup={this.levelup}
               setPrediction={this.setPrediction}
+              video={this.state.video}
             />
           )}
         </div>
@@ -80,6 +88,9 @@ class App extends Component {
                     <TableRow>
                       <TableCell key={prediction.label}>
                         {prediction.label}
+                      </TableCell>
+                      <TableCell key={prediction.confidence}>
+                        {Math.round(prediction.confidence * 100)}%
                       </TableCell>
                     </TableRow>
                   ))

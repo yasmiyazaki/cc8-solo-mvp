@@ -6,7 +6,6 @@ import TextField from "@material-ui/core/TextField";
 
 export default class Magikarp extends Component {
   state = {
-    video: "",
     classifier: "",
     textToRemember: "",
     count: 15,
@@ -15,16 +14,12 @@ export default class Magikarp extends Component {
   };
 
   classifyVideo = () => {
-    // [0] is necessary because of className being array
-    const video = document.getElementsByClassName("videoID")[0];
-    this.setState({ video });
-
     const modelReady = () => {
       this.classfyVideoConstant();
     };
 
     const mobilenet = ml5.featureExtractor("Mobilenet");
-    const classifier = mobilenet.classification(video, modelReady);
+    const classifier = mobilenet.classification(this.props.video, modelReady);
     this.setState({ classifier });
   };
 
@@ -34,11 +29,13 @@ export default class Magikarp extends Component {
 
   whileTraining = loss => {
     if (loss === null) {
-      console.log("Training Complete");
+      // console.log("Training Complete");
       this.state.classifier.classify(this.gotResults);
-    } else {
-      console.log(loss);
     }
+    // this will print the process of training
+    // else {
+    //   console.log(loss);
+    // }
   };
 
   gotResults = (err, results) => {
@@ -46,7 +43,6 @@ export default class Magikarp extends Component {
       console.log(err);
     } else {
       // the results is an arry and have three possible classification
-      console.log(results);
       this.props.setPrediction(results);
       setTimeout(this.classfyVideoConstant, 2000);
     }
@@ -59,7 +55,7 @@ export default class Magikarp extends Component {
   rememberTextAndImage = e => {
     e.preventDefault();
     this.state.classifier.addImage(this.state.textToRemember);
-    this.setState({ count: --this.state.count });
+    this.setState({ count: this.state.count - 1 });
   };
 
   trainImage = e => {
