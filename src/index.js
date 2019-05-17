@@ -42,6 +42,8 @@ const appReducer = (state = initialState, action) => {
       return Object.assign({}, state, { predictions: action.predictions });
     case "CLEAR_PREDICTION":
       return Object.assign({}, state, { predictions: [] });
+    case "CHANGE_VIEW":
+      return Object.assign({}, state, { magikarp: action.view });
     default:
       return state;
   }

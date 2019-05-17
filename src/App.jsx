@@ -9,6 +9,7 @@ import { levelUp, setVideo } from "./redux/actions";
 import Magikarp from "./components/Magikarp";
 import Gyarados from "./components/Gyarados";
 import Catch from "./components/Catch";
+import Functions from "./components/Functions";
 
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -38,7 +39,6 @@ export class App extends Component {
             <h1>Welcome To Magikarp Machine Learning</h1>
             <h2>Your have {this.state.level[this.props.currentLevel]}</h2>
           </header>
-
           {this.props.currentLevel === 0 && <Catch />}
           {this.props.currentLevel === 1 && <Magikarp />}
           {this.props.currentLevel === 2 && <Gyarados />}
@@ -66,6 +66,7 @@ export class App extends Component {
             </Table>
           </Paper>
           <Webcam className="videoID" />
+          <Functions />
         </div>
       </div>
     );

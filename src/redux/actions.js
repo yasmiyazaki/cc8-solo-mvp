@@ -29,3 +29,7 @@ export const setVideo = video => {
 export const clearPrediction = () => {
   return { type: "CLEAR_PREDICTION" };
 };
+
+export const changeView = n => {
+  return { type: "CHANGE_VIEW", view: n };
+};
