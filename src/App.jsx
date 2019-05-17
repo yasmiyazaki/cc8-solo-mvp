@@ -3,6 +3,9 @@ import "./App.css";
 
 import Webcam from "react-webcam";
 
+import { connect } from "react-redux";
+import { levelUp, setVideo } from "./redux/actions";
+
 import Magikarp from "./components/Magikarp";
 import Gyarados from "./components/Gyarados";
 import Catch from "./components/Catch";
@@ -13,39 +16,14 @@ import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 
-class App extends Component {
+export class App extends Component {
   state = {
-    video: "",
-    magikarp: "NONE",
-    level: {
-      NONE: "No Pokemon",
-      ONE: "Magikarp",
-      TWO: "Gyarados"
-    },
-    predictions: []
-  };
-
-  setPrediction = results => {
-    this.setState({ predictions: results });
-  };
-
-  levelup = () => {
-    switch (this.state.magikarp) {
-      case "NONE":
-        this.setState({ magikarp: "ONE" });
-        break;
-      case "ONE":
-        this.setState({ magikarp: "TWO" });
-        break;
-      default:
-        this.setState({ magikarp: "NONE" });
-        break;
-    }
+    level: ["No Pokemon", "Magikarp", "Gyarados"]
   };
   componentDidMount() {
     // [0] is necessary because of className being array
     const video = document.getElementsByClassName("videoID")[0];
-    this.setState({ video });
+    this.props.setVideo(video);
   }
 
   render() {
@@ -58,33 +36,20 @@ class App extends Component {
         <div className="column One">
           <header className="App-header">
             <h1>Welcome To Magikarp Machine Learning</h1>
-            <h2>Your have {this.state.level[this.state.magikarp]}</h2>
+            <h2>Your have {this.state.level[this.props.currentLevel]}</h2>
           </header>
 
-          {this.state.magikarp === "NONE" && <Catch levelup={this.levelup} />}
-          {this.state.magikarp === "ONE" && (
-            <Magikarp
-              levelup={this.levelup}
-              setPrediction={this.setPrediction}
-              trained={this.state.predictions.length}
-              video={this.state.video}
-            />
-          )}
-          {this.state.magikarp === "TWO" && (
-            <Gyarados
-              levelup={this.levelup}
-              setPrediction={this.setPrediction}
-              video={this.state.video}
-            />
-          )}
+          {this.props.currentLevel === 0 && <Catch />}
+          {this.props.currentLevel === 1 && <Magikarp />}
+          {this.props.currentLevel === 2 && <Gyarados />}
         </div>
         <div className="column Two">
           <h3>Predictions</h3>
           <Paper id="prediction-table">
             <Table>
               <TableBody>
-                {this.state.predictions.length > 0 ? (
-                  this.state.predictions.map(prediction => (
+                {this.props.predictions.length > 0 ? (
+                  this.props.predictions.map(prediction => (
                     <TableRow>
                       <TableCell key={prediction.label}>
                         {prediction.label}
@@ -107,4 +72,26 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = state => {
+  return {
+    level: state.level,
+    currentLevel: state.magikarp,
+    predictions: state.predictions
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    levelUp: () => {
+      dispatch(levelUp());
+    },
+    setVideo: video => {
+      dispatch(setVideo(video));
+    }
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);

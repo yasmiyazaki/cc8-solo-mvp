@@ -2,20 +2,26 @@ import React, { Component } from "react";
 import "../App.css";
 import ml5 from "ml5";
 
-export default class Gyarados extends Component {
+import { connect } from "react-redux";
+import {
+  levelUp,
+  setClassifier,
+  setPrediction,
+  clearPrediction
+} from "../redux/actions";
+
+export class Gyarados extends Component {
   classifyVideo = () => {
     const modelReady = () => {
       classfyVideoConstant();
     };
 
-    const classifier = ml5.imageClassifier(
-      "MobileNet",
-      this.props.video,
-      modelReady
+    this.props.setClassifier(
+      ml5.imageClassifier("MobileNet", this.props.video, modelReady)
     );
 
     const classfyVideoConstant = () => {
-      classifier.predict(this.props.video, gotResults);
+      this.props.classifier.predict(this.props.video, gotResults);
     };
 
     const gotResults = (err, results) => {
@@ -24,13 +30,22 @@ export default class Gyarados extends Component {
       } else {
         // the results is an arry and have three possible classification
         this.props.setPrediction(results);
-        setTimeout(classfyVideoConstant, 2000);
+        this.recursiveClassify(classfyVideoConstant);
       }
     };
   };
 
+  recursiveClassify = callback => {
+    setTimeout(callback, 2000);
+  };
+
   componentDidMount() {
     this.classifyVideo();
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.recursiveClassify);
+    this.recursiveClassify = () => this.props.clearPrediction();
   }
 
   render() {
@@ -43,10 +58,40 @@ export default class Gyarados extends Component {
         <img
           src="https://media.giphy.com/media/eydmTJPFi6KGc/giphy.gif"
           className="gif"
-          onClick={this.props.levelup}
+          onClick={this.props.levelUp}
           alt="gyarados"
         />
       </div>
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    classifier: state.classifier,
+    video: state.video,
+    predictions: state.predictions
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    levelUp: () => {
+      dispatch(levelUp());
+    },
+    setClassifier: classifier => {
+      dispatch(setClassifier(classifier));
+    },
+    setPrediction: results => {
+      dispatch(setPrediction(results));
+    },
+    clearPrediction: () => {
+      dispatch(clearPrediction());
+    }
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Gyarados);
