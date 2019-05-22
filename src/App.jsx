@@ -27,6 +27,16 @@ export class App extends Component {
     this.props.setVideo(video);
   }
 
+  componentDidUpdate(prevProps) {
+    if (
+      this.props.videoStatus !== prevProps.videoStatus &&
+      this.props.videoStatus === true
+    ) {
+      const video = document.getElementsByClassName("videoID")[0];
+      this.props.setVideo(video);
+    }
+  }
+
   render() {
     return (
       <div className="wrapper">
@@ -81,7 +91,8 @@ const mapStateToProps = state => {
     level: state.level,
     currentLevel: state.magikarp,
     predictions: state.predictions,
-    videoStatus: state.videoStatus
+    videoStatus: state.videoStatus,
+    video: state.video
   };
 };
 

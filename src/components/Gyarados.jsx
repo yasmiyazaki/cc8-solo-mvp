@@ -39,8 +39,14 @@ export class Gyarados extends Component {
     setTimeout(callback, 2000);
   };
 
-  componentDidMount() {
-    this.classifyVideo();
+  // componentDidMount() {
+  componentDidUpdate(prevProps) {
+    if (
+      this.props.videoStatus !== prevProps.videoStatus &&
+      this.props.videoStatus === true
+    ) {
+      setTimeout(() => this.classifyVideo(), 3000);
+    }
   }
 
   componentWillUnmount() {
@@ -70,7 +76,8 @@ const mapStateToProps = state => {
   return {
     classifier: state.classifier,
     video: state.video,
-    predictions: state.predictions
+    predictions: state.predictions,
+    videoStatus: state.videoStatus
   };
 };
 
