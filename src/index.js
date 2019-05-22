@@ -10,6 +10,7 @@ import { createStore } from "redux";
 const defaultTrainingTimes = 15;
 
 const initialState = {
+  videoStatus: false,
   video: "",
   magikarp: 0,
   predictions: [],
@@ -24,6 +25,9 @@ const appReducer = (state = initialState, action) => {
   switch (action.type) {
     case "SET_VIDEO":
       return Object.assign({}, state, { video: action.video });
+    case "SWITCH_VIDEO":
+      console.log(state.videoStatus);
+      return Object.assign({}, state, { videoStatus: !state.videoStatus });
     case "SWITCH_LEVEL":
       if (state.magikarp >= 2) {
         return Object.assign({}, state, { magikarp: 0 });

@@ -4,7 +4,7 @@ import "./App.css";
 import Webcam from "react-webcam";
 
 import { connect } from "react-redux";
-import { levelUp, setVideo } from "./redux/actions";
+import { levelUp, setVideo, switchVideo } from "./redux/actions";
 
 import Magikarp from "./components/Magikarp";
 import Gyarados from "./components/Gyarados";
@@ -66,7 +66,10 @@ export class App extends Component {
               </TableBody>
             </Table>
           </Paper>
-          <Webcam className="videoID" />
+          <button onClick={this.props.switchVideo}>
+            Switch {this.props.videoStatus ? "Off" : "On"} Video
+          </button>
+          {this.props.videoStatus === true && <Webcam className="videoID" />}
         </div>
       </div>
     );
@@ -77,7 +80,8 @@ const mapStateToProps = state => {
   return {
     level: state.level,
     currentLevel: state.magikarp,
-    predictions: state.predictions
+    predictions: state.predictions,
+    videoStatus: state.videoStatus
   };
 };
 
@@ -88,6 +92,9 @@ const mapDispatchToProps = dispatch => {
     },
     setVideo: video => {
       dispatch(setVideo(video));
+    },
+    switchVideo: () => {
+      dispatch(switchVideo());
     }
   };
 };

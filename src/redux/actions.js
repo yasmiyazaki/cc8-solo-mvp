@@ -22,6 +22,10 @@ export const setPrediction = results => {
   return { type: "SET_PREDICTION", predictions: results };
 };
 
+export const switchVideo = () => {
+  return { type: "SWITCH_VIDEO" };
+};
+
 export const setVideo = video => {
   return { type: "SET_VIDEO", video };
 };
